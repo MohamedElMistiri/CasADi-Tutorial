@@ -1,0 +1,57 @@
+site_name: CasADi Python Tutorial
+site_description: Symbolic modeling, nonlinear optimization, optimal control, and debugging
+repo_url: https://github.com/MohamedElMistiri/CasADi-Tutorial
+hooks:
+  - scripts/mkdocs_hooks.py
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - navigation.indexes
+    - content.code.copy
+    - search.suggest
+plugins:
+  - search
+  - mkdocs-jupyter:
+      include_source: true
+      execute: false
+      ignore_h1_titles: true
+markdown_extensions:
+  - admonition
+  - attr_list
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.highlight
+  - pymdownx.superfences
+extra_javascript:
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+nav:
+  - Home: index.md
+  - Foundations:
+      - Orientation: generated/notebooks/00_course_orientation.ipynb
+      - Symbolic types: generated/notebooks/01_symbolic_types.ipynb
+      - Sparsity: generated/notebooks/02_sparsity.ipynb
+      - Functions: generated/notebooks/03_functions.ipynb
+      - Automatic differentiation: generated/notebooks/04_automatic_differentiation.ipynb
+      - Graph tools: generated/notebooks/05_graph_tools.ipynb
+  - Numerical tools:
+      - Root finding and interpolation: generated/notebooks/06_roots_interpolation.ipynb
+      - ODE integration: generated/notebooks/07_ode_integration.ipynb
+      - DAE and sensitivities: generated/notebooks/08_dae_sensitivities.ipynb
+      - Nonlinear programs: generated/notebooks/09_nlpsol.ipynb
+      - Opti and QP: generated/notebooks/10_opti_qp.ipynb
+  - Optimal control:
+      - KKT and scaling: generated/notebooks/11_kkt_scaling.ipynb
+      - Shooting: generated/notebooks/12_shooting.ipynb
+      - Collocation: generated/notebooks/13_collocation.ipynb
+  - Capstones:
+      - CSTR simulation and estimation: generated/notebooks/14_cstr_estimation.ipynb
+      - CSTR OCP and NMPC: generated/notebooks/15_cstr_nmpc.ipynb
+      - UR5e kinematics: generated/notebooks/16_ur5e_kinematics.ipynb
+      - UR5e trajectory OCP: generated/notebooks/17_ur5e_ocp.ipynb
+  - Expert:
+      - Solver debugging: generated/notebooks/18_solver_debugging.ipynb
+      - Performance and code generation: generated/notebooks/19_performance_codegen.ipynb
+      - DaeBuilder, FMI, and plugins: generated/notebooks/20_daebuilder_plugins.ipynb
+  - Exercises: exercises.md
+  - API and conventions: api.md

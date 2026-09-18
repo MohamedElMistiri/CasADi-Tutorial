@@ -1,10 +1,15 @@
+"""Smoke test for the IPOPT plugin distributed with the tutorial environment."""
+
 import casadi as ca
 import numpy as np
 
 
 def test_ipopt_solves_parameterized_nlp() -> None:
+    """Solve a bounded parameterized NLP and verify its basic guarantees."""
     x = ca.MX.sym("x", 2)
     parameter = ca.MX.sym("parameter")
+
+    # The inequality x_0 + x_1 >= 1 is passed through CasADi's lbg/ubg API.
     problem = {
         "x": x,
         "p": parameter,
@@ -15,6 +20,7 @@ def test_ipopt_solves_parameterized_nlp() -> None:
         "test_ipopt", "ipopt", problem, {"ipopt.print_level": 0, "print_time": False}
     )
     result = solver(x0=[0, 0], p=2, lbx=0, ubx=3, lbg=1, ubg=ca.inf)
+
     assert solver.stats()["success"]
     assert np.isfinite(result["x"].full()).all()
     assert float(result["g"]) >= 1 - 1e-8

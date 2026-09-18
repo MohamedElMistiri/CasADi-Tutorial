@@ -7,28 +7,34 @@ on:
 jobs:
   test:
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        # A login shell activates the Conda environment on Linux and Windows.
+        shell: bash -el {0}
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
         python-version: ["3.10", "3.13"]
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Create the Conda environment
+        uses: conda-incubator/setup-miniconda@v4
         with:
+          miniforge-version: latest
+          environment-file: environment.yml
+          activate-environment: casadi-tutorial
           python-version: ${{ matrix.python-version }}
-      - uses: astral-sh/setup-uv@v6
-        with:
-          enable-cache: true
-      - run: uv sync --all-extras --locked
-      - run: uv run ruff check .
-      - run: uv run pytest
-      - run: uv run mkdocs build --strict
+          conda-remove-defaults: "true"
+      - run: ruff check .
+      - run: ruff format --check casadi_tutorial scripts tests
+      - run: pytest
+      - run: mkdocs build --strict
       - name: Execute fast notebooks
         if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.13'
-        run: uv run pytest --nbmake notebooks/00_course_orientation.ipynb notebooks/01_symbolic_types.ipynb notebooks/02_sparsity.ipynb notebooks/03_functions.ipynb notebooks/04_automatic_differentiation.ipynb notebooks/05_graph_tools.ipynb notebooks/06_roots_interpolation.ipynb notebooks/07_ode_integration.ipynb notebooks/08_dae_sensitivities.ipynb notebooks/09_nlpsol.ipynb notebooks/10_opti_qp.ipynb notebooks/11_kkt_scaling.ipynb notebooks/16_ur5e_kinematics.ipynb notebooks/18_solver_debugging.ipynb notebooks/19_performance_codegen.ipynb notebooks/20_daebuilder_plugins.ipynb solutions
+        run: pytest --nbmake notebooks/00_course_orientation.ipynb notebooks/01_symbolic_types.ipynb notebooks/02_sparsity.ipynb notebooks/03_functions.ipynb notebooks/04_automatic_differentiation.ipynb notebooks/05_graph_tools.ipynb notebooks/06_roots_interpolation.ipynb notebooks/07_ode_integration.ipynb notebooks/08_dae_sensitivities.ipynb notebooks/09_nlpsol.ipynb notebooks/10_opti_qp.ipynb notebooks/11_kkt_scaling.ipynb notebooks/16_ur5e_kinematics.ipynb notebooks/18_solver_debugging.ipynb notebooks/19_performance_codegen.ipynb notebooks/20_daebuilder_plugins.ipynb solutions
       - name: Compile generated C smoke test
         if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.13'
         run: |
-          uv run python scripts/codegen_smoke.py
+          python scripts/codegen_smoke.py
           gcc -fPIC -shared generated/generated_dynamics.c -o generated/generated_dynamics.so
-          uv run python scripts/load_codegen_smoke.py generated/generated_dynamics.so
+          python scripts/load_codegen_smoke.py generated/generated_dynamics.so

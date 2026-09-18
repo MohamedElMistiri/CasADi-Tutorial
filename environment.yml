@@ -1,0 +1,26 @@
+name: casadi-tutorial
+
+# Keep every course dependency on conda-forge so learners use one resolver and
+# do not need a separate pip or package-installation step.
+channels:
+  - conda-forge
+  - nodefaults
+
+dependencies:
+  - python >=3.10,<3.14
+  - casadi =3.7.2
+  - numpy >=1.26,<3
+  - scipy >=1.11,<2
+  - matplotlib >=3.8,<4
+  # CasADi's dotdraw helper builds Graphviz diagrams through pydot.
+  - graphviz >=12,<15
+  - pydot >=3,<5
+  - ipykernel >=6.29,<7
+  - jupyterlab >=4.2,<5
+  - nbmake >=1.5,<2
+  - pytest >=8,<9
+  - ruff >=0.6,<1
+  - mkdocs >=1.6,<2
+  - mkdocs-jupyter >=0.25,<1
+  - mkdocs-material >=9.5,<10
+  - pymdown-extensions >=10.9,<11

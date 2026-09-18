@@ -4,7 +4,8 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 .cache/
-.uv-cache/
+.conda/
+conda-bld/
 .ipynb_checkpoints/
 site/
 build/
@@ -15,3 +16,6 @@ docs/generated/
 *.so
 *.dll
 *.dylib
+# casadi.tools.graph.dotdraw writes these files in the active directory.
+_temp.png
+source.dot

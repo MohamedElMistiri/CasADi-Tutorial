@@ -8,14 +8,18 @@ on:
 jobs:
   notebooks:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -el {0}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Create the Conda environment
+        uses: conda-incubator/setup-miniconda@v4
         with:
+          miniforge-version: latest
+          environment-file: environment.yml
+          activate-environment: casadi-tutorial
           python-version: "3.13"
-      - uses: astral-sh/setup-uv@v6
-        with:
-          enable-cache: true
-      - run: uv sync --all-extras --locked
-      - run: uv run pytest --nbmake --nbmake-timeout=600 notebooks solutions
-      - run: uv run mkdocs build --strict
+          conda-remove-defaults: "true"
+      - run: pytest --nbmake --nbmake-timeout=600 notebooks solutions
+      - run: mkdocs build --strict

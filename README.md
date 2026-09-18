@@ -4,20 +4,23 @@ A notebook-first course for learning [CasADi](https://web.casadi.org/) from symb
 fundamentals through nonlinear optimization, optimal control, NMPC, sparse
 derivatives, and solver debugging.
 
-The course targets **Python 3.10–3.13** and **CasADi 3.8.x**. Readers should know
+The course targets **Python 3.10–3.13** and **CasADi 3.7.2**. Readers should know
 basic Python, NumPy, plotting, and single-variable calculus; optimization and
 control theory are introduced as needed.
 
 ## Start here
 
 ```bash
-uv sync --all-extras
-uv run jupyter lab
+conda env create -f environment.yml
+conda activate casadi-tutorial
+jupyter lab
 ```
 
-Alternatively, use `python -m pip install -e ".[tutorial,test,docs]"` in an
-activated virtual environment. The committed `uv.lock` is the reproducible course
-and CI environment.
+Run these commands from the repository root. The notebooks import the editable
+`casadi_tutorial/` modules directly from the checkout and enable IPython
+autoreload, so model changes do not require a package installation or kernel
+restart. Update an existing environment with
+`conda env update -f environment.yml --prune`.
 
 Open [`notebooks/00_course_orientation.ipynb`](notebooks/00_course_orientation.ipynb),
 then follow the numbered notebooks. The concise route is 00–05, 08–11, 14–17;
@@ -34,16 +37,18 @@ the complete route includes every chapter.
 | Expert/reference | 18–20 | Diagnose solvers, improve performance, and use codegen/callback/FMI tools |
 
 Exercises live in [`exercises/`](exercises/) and complete worked versions in
-[`solutions/`](solutions/). Reusable, typed examples are in
-[`src/casadi_tutorial/`](src/casadi_tutorial/).
+[`solutions/`](solutions/). Editable teaching modules are in
+[`casadi_tutorial/`](casadi_tutorial/); they are intentionally not configured as
+a distributable Python project while the course is evolving.
 
 ## Quality checks
 
 ```bash
-uv run pytest
-uv run pytest --nbmake notebooks solutions
-uv run mkdocs build --strict
-uv run ruff check .
+ruff check .
+ruff format --check casadi_tutorial scripts tests
+pytest
+pytest --nbmake notebooks solutions
+mkdocs build --strict
 ```
 
 Notebooks use small deterministic problems so they run on a laptop. Larger meshes

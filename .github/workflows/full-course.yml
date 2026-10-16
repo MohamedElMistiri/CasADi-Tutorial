@@ -11,6 +11,10 @@ jobs:
     defaults:
       run:
         shell: bash -el {0}
+    env:
+      CASADI_TUTORIAL_WIDGETS: "0"
+      OPENBLAS_NUM_THREADS: "1"
+      OMP_NUM_THREADS: "1"
     steps:
       - uses: actions/checkout@v4
       - name: Create the Conda environment

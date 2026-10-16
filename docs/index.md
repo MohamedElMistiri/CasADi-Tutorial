@@ -1,12 +1,27 @@
 # CasADi Python Tutorial
 
-This course teaches CasADi as a set of composable numerical building blocks. It
-starts with sparse symbolic expression graphs, derives the mathematics behind
-automatic differentiation and nonlinear programming, and ends with two complete
-optimal-control studies.
+This course teaches CasADi as composable numerical building blocks, from sparse
+symbolic graphs and exact derivatives to estimation and feedback control.
 
-Use the navigation in order on a first pass. Each chapter lists prerequisites,
-learning objectives, common mistakes, a recap, and exercises.
+Use the navigation in order on a first pass. Each chapter explains its equations,
+dimensions, assumptions, and numerical checks before guided experiments. Run a
+notebook from a fresh kernel before changing controls, then predict a result and
+test one change at a time.
+
+The CSTR path derives balances, fits heat transfer, reconstructs states from
+temperature measurements, and compares estimated-state NMPC with ideal feedback.
+The UR5e path derives DH kinematics, calibrates geometry and encoder offsets,
+estimates joint states, and closes a feedback loop around an obstacle-avoiding
+reference. Every capstone defines its own model and optimization formulations.
+
+Browser plots support hover, zoom, and 3D rotation. Python controls that recompute
+simulations and solver experiments require a local JupyterLab kernel; static pages
+retain deterministic default results. Download a notebook from its page and run
+it from the repository checkout.
+
+If a solve fails, start with chapter 18 and the 18a failure labs: inspect initial
+evaluations, identify the variable or constraint, repair the formulation, and
+validate the result independently. A solver success flag alone is insufficient.
 
 !!! note "What CasADi is"
     CasADi constructs differentiable expression graphs and connects them to

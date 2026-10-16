@@ -12,15 +12,19 @@ dependencies:
   - numpy >=1.26,<3
   - scipy >=1.11,<2
   - matplotlib >=3.8,<4
+  - ipywidgets >=8.1,<9
+  - plotly >=6,<7
   # CasADi's dotdraw helper builds Graphviz diagrams through pydot.
   - graphviz >=12,<15
   - pydot >=3,<5
   - ipykernel >=6.29,<7
   - jupyterlab >=4.2,<5
+  # Let nbmake select its compatible nbclient instead of pinning it separately.
   - nbmake >=1.5,<2
   - pytest >=8,<9
   - ruff >=0.6,<1
   - mkdocs >=1.6,<2
-  - mkdocs-jupyter >=0.25,<1
+  # 0.25.x supports Python 3.10; 0.26+ requires Python 3.11 or newer.
+  - mkdocs-jupyter >=0.25.1,<1
   - mkdocs-material >=9.5,<10
   - pymdown-extensions >=10.9,<11

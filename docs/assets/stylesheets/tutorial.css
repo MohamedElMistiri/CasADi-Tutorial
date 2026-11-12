@@ -1,0 +1,64 @@
+:root {
+  --md-primary-fg-color: #0b716c;
+  --md-accent-fg-color: #0b716c;
+}
+[data-md-color-scheme="default"] {
+  --md-default-bg-color: #faf9f6;
+  --md-default-fg-color: #233136;
+  --md-code-bg-color: #edf3f0;
+}
+[data-md-color-scheme="slate"] {
+  --md-default-bg-color: #171d20;
+  --md-code-bg-color: #243235;
+  --md-accent-fg-color: #75d0c2;
+}
+body, input, button { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+.md-banner { background: #233136; }
+.md-banner a { color: #fff; text-decoration: none; }
+.course-owner { color: #d6e5df; }
+.casadi-session {
+  padding: 1.2rem;
+  margin: 0 0 1.5rem;
+  border: 1px solid #8ebbb1;
+  border-radius: .65rem;
+  background: color-mix(in srgb, var(--md-default-bg-color) 92%, #0b716c);
+}
+.casadi-session-heading { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; }
+.casadi-session-heading strong { font-size: 1.1rem; }
+.casadi-session-badge { font-size: .65rem; color: var(--md-default-fg-color--light); }
+.casadi-session p { margin: .65rem 0; }
+.casadi-session-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .65rem; }
+.casadi-button, .casadi-live-cell .thebe-controls button {
+  appearance: none;
+  cursor: pointer;
+  padding: .55rem .85rem;
+  border: 1px solid #0b716c;
+  border-radius: .3rem;
+  font: inherit;
+  font-weight: 600;
+  background: #0b716c;
+  color: white;
+}
+.casadi-button.secondary { background: transparent; color: var(--md-typeset-a-color); }
+.casadi-button:disabled { cursor: wait; opacity: .6; }
+.casadi-button:focus-visible, .casadi-live-cell button:focus-visible { outline: 3px solid #88cbbb; outline-offset: 3px; }
+.casadi-session-status { font-size: .75rem; }
+.casadi-session details { font-size: .75rem; }
+.casadi-session summary { cursor: pointer; }
+[hidden] { display: none !important; }
+.casadi-live-cell { min-width: 0; padding-bottom: 1rem; }
+.casadi-live-cell .CodeMirror { height: auto; min-height: 4rem; font-size: .7rem; }
+.casadi-live-cell .CodeMirror-scroll { max-height: 32rem; }
+.casadi-live-cell .thebe-controls { padding: .4rem 0; }
+.casadi-live-cell .thebe-output { overflow-x: auto; }
+.casadi-live-cell .widget-vbox { max-width: 100%; }
+.casadi-live-cell .widget-label { min-width: 8rem; }
+.casadi-live-cell .widget-slider { max-width: 100%; }
+.casadi-live-cell .widget-button { border: 1px solid #a2bbb3; border-radius: .25rem; }
+.md-typeset .jp-Notebook { background: transparent; padding: 0; }
+.md-typeset .jp-InputArea { overflow-x: auto; }
+@media (max-width: 600px) {
+  .casadi-session { padding: .8rem; }
+  .casadi-session-actions { align-items: stretch; flex-direction: column; }
+  .casadi-session-actions a { padding-top: .25rem; }
+}

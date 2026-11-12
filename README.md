@@ -49,8 +49,10 @@ The capstones include:
 Set `CASADI_TUTORIAL_WIDGETS=0` to omit Python controls in headless runs. Set
 `CASADI_TUTORIAL_PLOTS=static` for Matplotlib instead of Plotly. These settings
 change presentation only; default calculations still run. Static documentation
-retains computed results and browser-native plot interaction. Running new
-solver experiments requires a JupyterLab kernel.
+retains computed results and browser-native plot interaction. Lesson pages can
+start an on-demand Binder kernel through Thebe to run Python and experiment
+controls directly in the page. Public Binder requires a public tutorial
+repository, and its sessions are temporary. Local JupyterLab remains available.
 
 ## Course map
 
@@ -76,6 +78,39 @@ pytest
 pytest --nbmake --nbmake-timeout=600 notebooks solutions
 mkdocs build --strict
 ```
+
+## Personal website integration
+
+The course and `MohamedElMistiri.github.io` remain separate repositories. The
+website's **Deploy site** workflow checks out this course, executes the lessons,
+and includes the built pages at `/tutorials/casadi/`. The same course commit is
+embedded in each page's Binder configuration. Publish the course changes before
+running that website workflow; public Binder needs a publicly accessible course
+repository. Repository visibility is managed separately from local development.
+
+After updating the course, rerun **Deploy site** in the website repository. Its
+optional `tutorial_ref` input accepts a branch, tag, or commit. The workflow also
+accepts a `casadi-tutorial-updated` repository dispatch event for external automation.
+No access token is embedded in the published tutorial. `binder/environment.yml`
+contains the runtime environment; development/build tools stay in `environment.yml`.
+
+For a local preview, build the Jekyll website first (using its Docker setup or
+`bundle exec jekyll build`), then run these from this checkout's course environment:
+
+```bash
+python scripts/build_tutorial.py --output ../MohamedElMistiri.github.io/_site/tutorials/casadi --site-url http://127.0.0.1:8090/tutorials/casadi/ --personal-site http://127.0.0.1:8090/
+python scripts/serve_website_preview.py --site-dir ../MohamedElMistiri.github.io/_site
+```
+
+Open `http://127.0.0.1:8090/`. Interactive sessions in this preview use a temporary
+local Jupyter server instead of public Binder. Credentials are injected into
+responses in memory only. Stop the preview with Ctrl+C. Normal production pages
+start Binder only when **Enable interactive session** is clicked; saved results
+remain available without a live session.
+
+With Playwright installed, `python scripts/validate_website_preview.py` checks
+the actual website navigation and the three representative interactive lessons.
+The earlier standalone validation scripts remain available for numerical checks.
 
 Notebooks use small deterministic problems so they run on a laptop. Mesh
 comparisons and independent residual checks distinguish convergence from

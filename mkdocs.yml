@@ -1,10 +1,26 @@
 site_name: CasADi Python Tutorial
+site_url: https://MohamedElMistiri.github.io/tutorials/casadi/
 site_description: Symbolic modeling, nonlinear optimization, optimal control, and debugging
 repo_url: https://github.com/MohamedElMistiri/CasADi-Tutorial
 hooks:
   - scripts/mkdocs_hooks.py
 theme:
   name: material
+  custom_dir: docs/overrides
+  font: false
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: teal
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: teal
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
   features:
     - navigation.sections
     - navigation.indexes
@@ -30,7 +46,13 @@ markdown_extensions:
   - pymdownx.superfences
 extra_javascript:
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+  - assets/javascripts/interactive.js
+extra_css:
+  - assets/stylesheets/tutorial.css
+extra:
+  personal_site: https://MohamedElMistiri.github.io/
 nav:
+  - Back to Mohamed's website: https://MohamedElMistiri.github.io/
   - Home: index.md
   - Foundations:
       - Orientation: generated/notebooks/00_course_orientation.ipynb

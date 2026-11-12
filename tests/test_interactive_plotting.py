@@ -10,7 +10,7 @@ import numpy as np
 import pytest
 
 from casadi_tutorial.interactive import experiment
-from casadi_tutorial.plotting import plot_robot, plot_series, plot_ur5e
+from casadi_tutorial.plotting import display_plot, plot_robot, plot_series, plot_ur5e
 
 
 def test_static_series_preserves_input_timing(monkeypatch):
@@ -49,6 +49,21 @@ def test_plotly_default_can_be_exported_without_kernel(monkeypatch):
     assert "Plotly.newPlot" in figure.to_html(full_html=False, include_plotlyjs=False)
     robot = plot_robot(np.zeros((3, 2)))
     assert robot.to_plotly_json()["data"][0]["type"] == "scatter3d"
+
+
+@pytest.mark.skipif(importlib.util.find_spec("plotly") is None, reason="optional Plotly absent")
+def test_display_has_native_data_and_a_small_html_fallback(monkeypatch):
+    monkeypatch.delenv("CASADI_TUTORIAL_PLOTS", raising=False)
+    captured = []
+    monkeypatch.setattr("IPython.display.display", lambda data, **kw: captured.append((data, kw)))
+    display_plot(plot_series([0, 1], {"state": [0, 1]}))
+    bundle, options = captured[0]
+    assert options["raw"]
+    assert bundle["application/vnd.plotly.v1+json"]["data"][0]["name"] == "state"
+    assert "Plotly.newPlot" in bundle["text/html"]
+    assert "casadiPlotlyReady" in bundle["text/html"]
+    assert "MathJax.js" not in bundle["text/html"]
+    assert len(bundle["text/html"]) < 100_000
 
 
 def test_widget_opt_out_never_runs(monkeypatch):

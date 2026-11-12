@@ -5,6 +5,7 @@ Plotly is selected when installed. Set ``CASADI_TUTORIAL_PLOTS=static`` or pass
 return figures/axes; ``display_plot`` presents either kind in a notebook.
 """
 
+import json
 import os
 
 import casadi as ca
@@ -34,7 +35,36 @@ def display_plot(figure):
     come directly from Matplotlib, so a browser screenshot engine is unnecessary.
     """
     if hasattr(figure, "to_plotly_json"):
-        figure.show(renderer="plotly_mimetype+notebook")
+        from IPython.display import display
+        from plotly.offline import get_plotlyjs_version
+
+        # Native MIME data serves JupyterLab; HTML serves exports and Thebe.
+        # Share one library per page and use the site's existing MathJax.
+        body = figure.to_html(
+            full_html=False, include_plotlyjs=False, include_mathjax=False, default_height=525
+        )
+        loader = """
+window.casadiPlotlyReady = window.casadiPlotlyReady || new Promise((resolve, reject) => {
+  if (window.Plotly) { resolve(); return; }
+  const script = document.createElement('script');
+  script.src = 'https://cdn.plot.ly/plotly-VERSION.min.js';
+  script.onload = resolve;
+  script.onerror = () => {
+    window.casadiPlotlyReady = null;
+    reject(Error('Plotly could not load'));
+  };
+  document.head.append(script);
+});
+window.casadiPlotlyReady.then(() => {
+""".replace("VERSION", get_plotlyjs_version())
+        # Plotly versions emit either a plain script tag or one with type=.
+        opening = body.index(">", body.index("<script")) + 1
+        body = body[:opening] + loader + body[opening:]
+        body = body.replace("</script>", "});</script>", 1)
+        display(
+            {"application/vnd.plotly.v1+json": json.loads(figure.to_json()), "text/html": body},
+            raw=True,
+        )
     else:
         from IPython.display import display
 

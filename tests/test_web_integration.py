@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 from scripts import mkdocs_hooks
 
 
-def render_lesson(tmp_path, monkeypatch, source, content):
+def render_lesson(tmp_path, monkeypatch, source, content, files=None):
     (tmp_path / "scripts").mkdir()
     (tmp_path / "notebooks").mkdir()
     (tmp_path / "notebooks/pilot.ipynb").write_text(
@@ -17,8 +17,52 @@ def render_lesson(tmp_path, monkeypatch, source, content):
     )
     monkeypatch.setattr(mkdocs_hooks, "__file__", str(tmp_path / "scripts/mkdocs_hooks.py"))
     monkeypatch.setenv("CASADI_TUTORIAL_REF", "a" * 40)
-    page = SimpleNamespace(file=SimpleNamespace(src_uri="generated/notebooks/pilot.ipynb"))
-    return mkdocs_hooks.on_page_content(content, page, None, None)
+    page = SimpleNamespace(
+        file=SimpleNamespace(
+            src_uri="generated/notebooks/pilot.ipynb", url="generated/notebooks/pilot/"
+        )
+    )
+    return mkdocs_hooks.on_page_content(content, page, None, files)
+
+
+@pytest.mark.parametrize(
+    ("href", "target_source", "target_url", "expected"),
+    [
+        (
+            "../exercises/task.ipynb",
+            "generated/exercises/task.ipynb",
+            "generated/exercises/task/",
+            "../../exercises/task/",
+        ),
+        (
+            "next.ipynb#example",
+            "generated/notebooks/next.ipynb",
+            "generated/notebooks/next/",
+            "../next/#example",
+        ),
+    ],
+)
+def test_notebook_links_open_published_pages(
+    tmp_path, monkeypatch, href, target_source, target_url, expected
+):
+    files = SimpleNamespace(
+        get_file_from_path=lambda path: (
+            SimpleNamespace(url=target_url) if path == target_source else None
+        )
+    )
+    content = (
+        f'<a href="{href}">Continue</a>'
+        '<a href="https://example.com/download.ipynb">External download</a>'
+        '<div class="jp-CodeCell"><div class="jp-InputArea">'
+        '<div class="jp-InputArea-editor">print(1)</div></div></div>'
+    )
+    soup = BeautifulSoup(
+        render_lesson(tmp_path, monkeypatch, "print(1)", content, files), "html.parser"
+    )
+    assert soup.find("a", string="Continue")["href"] == expected
+    assert (
+        soup.find("a", string="External download")["href"] == "https://example.com/download.ipynb"
+    )
 
 
 def test_metadata_preserves_source_and_marks_only_code(tmp_path, monkeypatch):

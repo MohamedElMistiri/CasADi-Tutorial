@@ -4,12 +4,14 @@ import hashlib
 import html
 import json
 import os
+import posixpath
 import shutil
 import subprocess
 from pathlib import Path
-from urllib.parse import quote
+from urllib.parse import quote, unquote, urlsplit, urlunsplit
 
 from bs4 import BeautifulSoup
+from mkdocs.utils import get_relative_url
 
 
 def on_config(config):
@@ -68,6 +70,21 @@ def on_page_content(content, page, config, files):
     notebook = json.loads((repository / notebook_path).read_text(encoding="utf-8"))
     code = ["".join(cell["source"]) for cell in notebook["cells"] if cell["cell_type"] == "code"]
     soup = BeautifulSoup(content, "html.parser")
+    # Notebook Markdown bypasses MkDocs' Markdown link resolver. Translate its
+    # source-relative links to the corresponding published lesson URLs.
+    for link in soup.select("a[href]"):
+        url = urlsplit(link["href"])
+        if url.scheme or url.netloc or not url.path.endswith(".ipynb"):
+            continue
+        target_source = posixpath.normpath(
+            posixpath.join(posixpath.dirname(source), unquote(url.path))
+        )
+        target = files.get_file_from_path(target_source)
+        if target is None:
+            raise RuntimeError(f"Missing notebook link in {notebook_path}: {link['href']}")
+        link["href"] = urlunsplit(
+            ("", "", get_relative_url(target.url, page.file.url), url.query, url.fragment)
+        )
     # mkdocs-jupyter uses InputArea for rendered Markdown too; only code areas
     # contain the editor wrapper. Nested CodeCell divs must not be counted twice.
     inputs = [

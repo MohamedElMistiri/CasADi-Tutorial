@@ -2,6 +2,8 @@ site_name: CasADi Python Tutorial
 site_url: https://MohamedElMistiri.github.io/tutorials/casadi/
 site_description: Symbolic modeling, nonlinear optimization, optimal control, and debugging
 repo_url: https://github.com/MohamedElMistiri/CasADi-Tutorial
+exclude_docs: |
+  /overrides/
 hooks:
   - scripts/mkdocs_hooks.py
 theme:
